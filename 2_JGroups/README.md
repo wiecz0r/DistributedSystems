@@ -18,7 +18,7 @@ W związku z tym każda instancja klasy _DistributedMap_ powinna mieć własną 
 ##### Dodatkowe informacje
 Ze względu na swój rozproszony charakter, aplikacja będzie testowana w laboratorium, i w sposób naturalny będzie wchodzić w interakcję z aplikacjami innych studentów, dlatego warto rozważyć modyfikację domyślnego adresu grupowego wykorzystywanego przez protokół UDP:
 
-new UDP().setValue("mcast_group_addr",InetAddress.getByName("230.100.200.x"))
+`new UDP().setValue("mcast_group_addr",InetAddress.getByName("230.100.200.x"))`
 
 Tutorial opisujący mechanizm przesyłania stanu za pomocą biblioteki JGroups:
 http://www.jgroups.org/manual/index.html#StateTransfer
