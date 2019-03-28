@@ -10,12 +10,14 @@ public class DistributedMap implements SimpleStringMap {
     private HashMap<String, Integer> localMap;
     private JChannel channel;
     private String multicastIP;
+    private String clusterName;
 
     public DistributedMap(String clusterName, String multicastIP) throws Exception {
         this.localMap = new HashMap<>();
         this.channel = new JChannel(false);
         this.multicastIP = multicastIP;
-        init_channel(clusterName);
+        this.clusterName = clusterName;
+        init_channel();
     }
 
     @Override
@@ -35,7 +37,7 @@ public class DistributedMap implements SimpleStringMap {
     @Override
     public void put(String key, Integer value) {
         try {
-            sendOperation(MapOperationEnum.PUT, key, value);
+            sendOperation(MapCommandType.PUT, key, value);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -45,16 +47,18 @@ public class DistributedMap implements SimpleStringMap {
     @Override
     public Integer remove(String key) {
         try {
-            sendOperation(MapOperationEnum.REMOVE, key, null);
+            sendOperation(MapCommandType.REMOVE, key, null);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return localMap.remove(key);
     }
 
-    private void init_channel(String clusterName) throws Exception {
-        System.setProperty("java.net.preferIPv4Stack", "true");
+    public void close() {
+        this.channel.close();
+    }
 
+    private void init_channel() throws Exception {
         ProtocolStack stack = new ProtocolStack();
         channel.setProtocolStack(stack);
         stack.addProtocol(new UDP().setValue("mcast_group_addr", InetAddress.getByName(this.multicastIP)))
@@ -74,21 +78,33 @@ public class DistributedMap implements SimpleStringMap {
                 .addProtocol(new MFC())
                 .addProtocol(new FRAG2())
                 .addProtocol(new STATE())
-                .addProtocol(new SEQUENCER())
                 .addProtocol(new FLUSH());
 
         stack.init();
 
         channel.setReceiver(new Receiver(this, channel));
         //CONNECT
-        channel.connect(clusterName);
+        channel.connect(this.clusterName);
         channel.getState(null, 0);
     }
 
-    private void sendOperation(MapOperationEnum mapOperationEnum, String key, Integer value) throws Exception {
-        MapCommand mapCommand = new MapCommand(mapOperationEnum, key, value);
+    private void sendOperation(MapCommandType mapCommandType, String key, Integer value) throws Exception {
+        MapCommand mapCommand = new MapCommand(mapCommandType, key, value);
         byte[] byteBuffer = mapCommand.toByteArray();
         Message message = new Message(null, null, byteBuffer);
         this.channel.send(message);
+    }
+
+    @Override
+    public String toString() {
+        if (localMap.keySet().size() == 0) {
+            return "{}";
+        }
+        StringBuilder mapAsString = new StringBuilder("{");
+        for (String key : localMap.keySet()) {
+            mapAsString.append(String.format("[%s : %d], ", key, localMap.get(key)));
+        }
+        mapAsString.delete(mapAsString.length() - 2, mapAsString.length()).append("}");
+        return mapAsString.toString();
     }
 }

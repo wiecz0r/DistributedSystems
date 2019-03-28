@@ -1,17 +1,17 @@
 import java.io.*;
 
 class MapCommand implements Serializable {
-    private MapOperationEnum mapOperation;
+    private MapCommandType mapOperation;
     private String key;
     private Integer value;
 
-    MapCommand(MapOperationEnum mapOperationEnum, String key, Integer value) {
-        this.mapOperation = mapOperationEnum;
+    MapCommand(MapCommandType mapCommandType, String key, Integer value) {
+        this.mapOperation = mapCommandType;
         this.key = key;
         this.value = value;
     }
 
-    public MapOperationEnum getMapOperation() {
+    public MapCommandType getMapOperation() {
         return mapOperation;
     }
 
@@ -37,7 +37,7 @@ class MapCommand implements Serializable {
         MapCommand cmd = null;
 
         try (ByteArrayInputStream bais = new ByteArrayInputStream(stream);
-             ObjectInputStream ois = new ObjectInputStream(bais);) {
+             ObjectInputStream ois = new ObjectInputStream(bais)) {
             cmd = (MapCommand) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             // Error in de-serialization
