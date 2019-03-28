@@ -1,3 +1,5 @@
+package pl.edu.agh.dsrg.sr;
+
 public interface SimpleStringMap {
     boolean containsKey(String key);
 

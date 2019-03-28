@@ -1,3 +1,5 @@
+package pl.edu.agh.dsrg.sr;
+
 import org.jgroups.*;
 import org.jgroups.protocols.*;
 import org.jgroups.protocols.pbcast.*;

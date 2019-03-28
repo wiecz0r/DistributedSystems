@@ -1,3 +1,5 @@
+package pl.edu.agh.dsrg.sr;
+
 import java.io.*;
 
 class MapCommand implements Serializable {
