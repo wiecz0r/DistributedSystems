@@ -36,12 +36,12 @@ public abstract class Message implements Serializable {
         }
     }
 
-    public void send(Channel channel, String routingKey){
+    public void send(Channel channel, String routingKey) {
         try {
-            channel.basicPublish(App.EXCHANGE_NAME,routingKey,null,this.serialize());
+            channel.basicPublish(App.EXCHANGE_NAME, routingKey, null, this.serialize());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.printf("Sent message with key [%s]:\n%s\n",routingKey,this.toString());
+        System.out.printf("Sent message with key [%s]:\n%s\n", routingKey, this.toString());
     }
 }
