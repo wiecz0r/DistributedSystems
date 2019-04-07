@@ -1,11 +1,10 @@
 package src.pl.edu.agh.student.swieczor.rabbitmqhospital.staff;
 
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConnectionFactory;
 import src.pl.edu.agh.student.swieczor.rabbitmqhospital.App;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public abstract class Staff {

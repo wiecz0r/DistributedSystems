@@ -10,12 +10,6 @@ public abstract class ExaminationMessage extends Message {
         this.patient = patient;
     }
 
-    public enum ExaminationType {
-        KNEE,
-        HIP,
-        ELBOW
-    }
-
     public ExaminationType getExaminationType() {
         return examinationType;
     }
@@ -24,9 +18,15 @@ public abstract class ExaminationMessage extends Message {
         return patient;
     }
 
-
     @Override
     public String toString() {
         return examinationType.toString() + " " + patient;
+    }
+
+
+    public enum ExaminationType {
+        KNEE,
+        HIP,
+        ELBOW
     }
 }

@@ -14,6 +14,16 @@ public abstract class Message implements Serializable {
         this.timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
 
+    public static Message deserialize(byte[] byteArray) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(byteArray);
+        try (ObjectInputStream oi = new ObjectInputStream(bis)) {
+            return (Message) oi.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public byte[] serialize() {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
@@ -21,16 +31,6 @@ public abstract class Message implements Serializable {
             oos.flush();
             return bos.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static Message deserialize(byte[] byteArray) {
-        ByteArrayInputStream bis = new ByteArrayInputStream(byteArray);
-        try (ObjectInputStream oi = new ObjectInputStream(bis)) {
-            return (Message) oi.readObject();
-        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
         }
