@@ -12,25 +12,36 @@ import java.util.concurrent.TimeoutException;
 
 public class Doctor extends Staff {
 
-
-    public Doctor() throws IOException, TimeoutException {
+    Doctor() throws IOException, TimeoutException {
         super();
     }
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         Doctor doctor = new Doctor();
         System.out.println("Doctor");
 
+        //Declare info-queue
         String infoQ = doctor.createQueue("info");
         doctor.channel.basicConsume(infoQ,true, new ReceiveConsumer(doctor.channel));
 
+        //Declare result-queue
         String examinationResultsQ = doctor.createQueue("doctor");
-        RequestExaminationMessage msg = new RequestExaminationMessage(ExaminationType.HIP,"Kowalski");
         BasicProperties props = new BasicProperties.Builder().replyTo(examinationResultsQ).build();
 
+        doctor.channel.basicConsume(examinationResultsQ,true,new ReceiveConsumer(doctor.channel));
 
-        msg.send(doctor.channel,props);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        while(true){
+            System.out.println("Send message to technician.\nPatient name:");
+            String patient = br.readLine();
+            System.out.println("Examination type (knee / hip / elbow): ");
+            String type = br.readLine().toUpperCase();
+
+            RequestExaminationMessage requestMsg =
+                    new RequestExaminationMessage(ExaminationType.valueOf(type),patient);
+            requestMsg.sendMsg(doctor.channel,props);
+        }
+
 
 
     }

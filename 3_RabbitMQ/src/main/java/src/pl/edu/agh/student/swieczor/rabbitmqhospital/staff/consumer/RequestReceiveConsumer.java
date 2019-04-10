@@ -24,6 +24,7 @@ public class RequestReceiveConsumer extends ReceiveConsumer {
         RequestExaminationMessage requestMsg = (RequestExaminationMessage) message;
         ResultExaminationMessage resultMsg = new ResultExaminationMessage(
                 requestMsg.getExaminationType(), requestMsg.getPatient(), "");
-        resultMsg.send(getChannel(),properties.getReplyTo());
+        resultMsg.sendAsReply(getChannel(),properties.getReplyTo());
+        resultMsg.send(getChannel(),"logger");
     }
 }

@@ -25,7 +25,7 @@ abstract class Staff {
         String queue = channel.queueDeclare().getQueue();
         channel.queueBind(queue, App.EXCHANGE_NAME, routeKey);
 
-        System.out.printf("Created queue '%s' with route key [%s]", queue, routeKey);
+        System.out.printf("Created queue '%s' with route key [%s]\n", queue, routeKey);
         return queue;
     }
 

@@ -15,7 +15,7 @@ public class RequestExaminationMessage extends ExaminationMessage {
         return super.toString() + " REQUEST";
     }
 
-    public void send(Channel channel, AMQP.BasicProperties properties) {
+    public void sendMsg(Channel channel, AMQP.BasicProperties properties) {
         String routingKey = "request." + this.examinationType.toString().toLowerCase();
         super.send(channel, routingKey, properties);
     }

@@ -24,6 +24,7 @@ public class App {
                 Connection connection = factory.newConnection();
                 Channel channel = connection.createChannel();
                 channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);
+                channel.basicQos(1);
 
                 for (ExaminationType examinationType : ExaminationType.values()) {
                     String q_name = examinationType.toString().toLowerCase();

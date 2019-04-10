@@ -37,9 +37,18 @@ public abstract class Message implements Serializable {
         }
     }
 
-    void send(Channel channel, String routingKey, AMQP.BasicProperties properties) {
+    public void send(Channel channel, String routingKey, AMQP.BasicProperties properties) {
         try {
             channel.basicPublish(App.EXCHANGE_NAME, routingKey, properties, this.serialize());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.printf("Sent message with key [%s]:\n%s\n", routingKey, this.toString());
+    }
+
+    public void sendAsReply(Channel channel, String routingKey){
+        try {
+            channel.basicPublish("", routingKey, null, this.serialize());
         } catch (IOException e) {
             e.printStackTrace();
         }
