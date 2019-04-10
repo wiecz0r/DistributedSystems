@@ -1,5 +1,6 @@
 package src.pl.edu.agh.student.swieczor.rabbitmqhospital.message;
 
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import src.pl.edu.agh.student.swieczor.rabbitmqhospital.App;
 
@@ -36,9 +37,9 @@ public abstract class Message implements Serializable {
         }
     }
 
-    public void send(Channel channel, String routingKey) {
+    void send(Channel channel, String routingKey, AMQP.BasicProperties properties) {
         try {
-            channel.basicPublish(App.EXCHANGE_NAME, routingKey, null, this.serialize());
+            channel.basicPublish(App.EXCHANGE_NAME, routingKey, properties, this.serialize());
         } catch (IOException e) {
             e.printStackTrace();
         }

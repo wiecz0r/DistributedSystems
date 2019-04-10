@@ -7,10 +7,10 @@ import src.pl.edu.agh.student.swieczor.rabbitmqhospital.App;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public abstract class Staff {
-    private Channel channel;
+abstract class Staff {
+    Channel channel;
 
-    public Staff() throws IOException, TimeoutException {
+    Staff() throws IOException, TimeoutException {
         init();
     }
 
@@ -21,7 +21,7 @@ public abstract class Staff {
         this.channel = connectionFactory.newConnection().createChannel();
     }
 
-    private String createQueue(String routeKey) throws IOException {
+    String createQueue(String routeKey) throws IOException {
         String queue = channel.queueDeclare().getQueue();
         channel.queueBind(queue, App.EXCHANGE_NAME, routeKey);
 

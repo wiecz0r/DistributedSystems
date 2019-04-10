@@ -1,8 +1,10 @@
 package src.pl.edu.agh.student.swieczor.rabbitmqhospital.message;
 
+import src.pl.edu.agh.student.swieczor.rabbitmqhospital.ExaminationType;
+
 public abstract class ExaminationMessage extends Message {
-    private ExaminationType examinationType;
-    private String patient;
+    ExaminationType examinationType;
+    String patient;
 
     public ExaminationMessage(ExaminationType examinationType, String patient) {
         super();
@@ -24,9 +26,5 @@ public abstract class ExaminationMessage extends Message {
     }
 
 
-    public enum ExaminationType {
-        KNEE,
-        HIP,
-        ELBOW
-    }
+
 }

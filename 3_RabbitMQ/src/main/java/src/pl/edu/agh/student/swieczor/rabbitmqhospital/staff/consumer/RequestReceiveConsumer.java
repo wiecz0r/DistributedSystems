@@ -6,13 +6,15 @@ import com.rabbitmq.client.Envelope;
 import src.pl.edu.agh.student.swieczor.rabbitmqhospital.message.RequestExaminationMessage;
 import src.pl.edu.agh.student.swieczor.rabbitmqhospital.message.ResultExaminationMessage;
 
-public class RequestConsumer extends ReceiveConsumer {
+import java.io.IOException;
+
+public class RequestReceiveConsumer extends ReceiveConsumer {
     /**
      * Constructs a new instance and records its association to the passed-in channel.
      *
      * @param channel the channel to which this consumer is attached
      */
-    public RequestConsumer(Channel channel) {
+    public RequestReceiveConsumer(Channel channel) {
         super(channel);
     }
 
@@ -22,6 +24,6 @@ public class RequestConsumer extends ReceiveConsumer {
         RequestExaminationMessage requestMsg = (RequestExaminationMessage) message;
         ResultExaminationMessage resultMsg = new ResultExaminationMessage(
                 requestMsg.getExaminationType(), requestMsg.getPatient(), "");
-        resultMsg.send(getChannel(), requestMsg.getRoutingKey());
+        resultMsg.send(getChannel(),properties.getReplyTo());
     }
 }
