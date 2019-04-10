@@ -4,6 +4,7 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import static src.pl.edu.agh.student.swieczor.rabbitmqhospital.Color.*;
 import src.pl.edu.agh.student.swieczor.rabbitmqhospital.message.Message;
 
 
@@ -18,7 +19,8 @@ public class ReceiveConsumer extends DefaultConsumer {
     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
         message = Message.deserialize(body);
         if (message != null) {
-            System.out.println("Received message:\n" + message.toString());
+            System.out.println(ANSI_YELLOW +
+                    "Received message:\n" + message.toString() + ANSI_RESET);
         }
     }
 }

@@ -14,6 +14,6 @@ public class InformationMessage extends Message {
 
     @Override
     public String toString() {
-        return messageText;
+        return super.toString() + messageText;
     }
 }

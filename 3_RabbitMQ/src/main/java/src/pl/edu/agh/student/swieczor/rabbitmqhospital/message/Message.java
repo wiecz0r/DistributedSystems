@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public abstract class Message implements Serializable {
-    private String timestamp;
+    String timestamp;
 
     public Message() {
         this.timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
@@ -37,13 +37,13 @@ public abstract class Message implements Serializable {
         }
     }
 
-    public void send(Channel channel, String routingKey, AMQP.BasicProperties properties) {
+    public void sendMsg(Channel channel, String routingKey, AMQP.BasicProperties properties) {
         try {
             channel.basicPublish(App.EXCHANGE_NAME, routingKey, properties, this.serialize());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.printf("Sent message with key [%s]:\n%s\n", routingKey, this.toString());
+//        System.out.printf("Sent message with key [%s]:\n%s\n", routingKey, this.toString());
     }
 
     public void sendAsReply(Channel channel, String routingKey){
@@ -52,6 +52,11 @@ public abstract class Message implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.printf("Sent message with key [%s]:\n%s\n", routingKey, this.toString());
+//        System.out.printf("Sent message with key [%s]:\n%s\n", routingKey, this.toString());
+    }
+
+    @Override
+    public String toString() {
+        return this.timestamp + " ";
     }
 }

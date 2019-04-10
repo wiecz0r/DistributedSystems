@@ -6,8 +6,6 @@ import com.rabbitmq.client.Envelope;
 import src.pl.edu.agh.student.swieczor.rabbitmqhospital.message.RequestExaminationMessage;
 import src.pl.edu.agh.student.swieczor.rabbitmqhospital.message.ResultExaminationMessage;
 
-import java.io.IOException;
-
 public class RequestReceiveConsumer extends ReceiveConsumer {
     /**
      * Constructs a new instance and records its association to the passed-in channel.
@@ -23,8 +21,8 @@ public class RequestReceiveConsumer extends ReceiveConsumer {
         super.handleDelivery(consumerTag, envelope, properties, body);
         RequestExaminationMessage requestMsg = (RequestExaminationMessage) message;
         ResultExaminationMessage resultMsg = new ResultExaminationMessage(
-                requestMsg.getExaminationType(), requestMsg.getPatient(), "");
+                requestMsg.getExaminationType(), requestMsg.getPatient(), "DONE");
         resultMsg.sendAsReply(getChannel(),properties.getReplyTo());
-        resultMsg.send(getChannel(),"logger");
+        resultMsg.sendMsg(getChannel(),"logger");
     }
 }

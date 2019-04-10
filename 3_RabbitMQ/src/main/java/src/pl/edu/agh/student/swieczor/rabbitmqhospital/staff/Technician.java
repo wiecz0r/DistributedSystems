@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeoutException;
 
+import static src.pl.edu.agh.student.swieczor.rabbitmqhospital.Color.*;
 
 public class Technician extends Staff {
 
@@ -23,7 +24,7 @@ public class Technician extends Staff {
     }
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        System.out.println("Technician");
+        System.out.println(ANSI_BLUE + "Technician" + ANSI_RESET);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("You must enter two specializations (knee / hip / elbow).\n1st:");
         ExaminationType type1 = ExaminationType.valueOf(br.readLine().toUpperCase());

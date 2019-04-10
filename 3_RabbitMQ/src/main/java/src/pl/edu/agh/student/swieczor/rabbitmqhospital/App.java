@@ -28,7 +28,7 @@ public class App {
 
                 for (ExaminationType examinationType : ExaminationType.values()) {
                     String q_name = examinationType.toString().toLowerCase();
-                    channel.queueDeclare(q_name, false, false, true, null);
+                    channel.queueDeclare(q_name, false, false, false, null);
                     String routingKey = "request." + q_name;
                     channel.queueBind(q_name, EXCHANGE_NAME, routingKey);
                     System.out.printf("Created queue '%s' with routingKey: '%s'\n", q_name, routingKey);

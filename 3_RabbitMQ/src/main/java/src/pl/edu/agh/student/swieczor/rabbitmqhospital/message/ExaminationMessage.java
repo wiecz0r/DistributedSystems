@@ -22,7 +22,7 @@ public abstract class ExaminationMessage extends Message {
 
     @Override
     public String toString() {
-        return examinationType.toString() + " " + patient;
+        return super.toString() + examinationType.toString() + " " + patient;
     }
 
 

@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeoutException;
 
+import static src.pl.edu.agh.student.swieczor.rabbitmqhospital.Color.*;
+
 public class Doctor extends Staff {
 
     Doctor() throws IOException, TimeoutException {
@@ -18,7 +20,7 @@ public class Doctor extends Staff {
 
     public static void main(String[] args) throws IOException, TimeoutException {
         Doctor doctor = new Doctor();
-        System.out.println("Doctor");
+        System.out.println(ANSI_BLUE + "Doctor" + ANSI_RESET);
 
         //Declare info-queue
         String infoQ = doctor.createQueue("info");
@@ -32,7 +34,7 @@ public class Doctor extends Staff {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while(true){
-            System.out.println("Send message to technician.\nPatient name:");
+            System.out.println("\nSend message to technician.\nPatient name:");
             String patient = br.readLine();
             System.out.println("Examination type (knee / hip / elbow): ");
             String type = br.readLine().toUpperCase();

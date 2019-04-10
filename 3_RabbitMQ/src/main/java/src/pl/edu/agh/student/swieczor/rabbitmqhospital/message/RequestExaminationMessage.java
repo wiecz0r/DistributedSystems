@@ -10,13 +10,8 @@ public class RequestExaminationMessage extends ExaminationMessage {
         super(examinationType, patient);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " REQUEST";
-    }
-
     public void sendMsg(Channel channel, AMQP.BasicProperties properties) {
         String routingKey = "request." + this.examinationType.toString().toLowerCase();
-        super.send(channel, routingKey, properties);
+        super.sendMsg(channel, routingKey, properties);
     }
 }
