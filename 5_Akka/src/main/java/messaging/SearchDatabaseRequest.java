@@ -1,4 +1,4 @@
-package messages;
+package messaging;
 
 public class SearchDatabaseRequest extends Request {
     public String database;

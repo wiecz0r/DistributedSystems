@@ -2,23 +2,18 @@ package server;
 
 import akka.actor.*;
 import akka.japi.pf.DeciderBuilder;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import messaging.Request;
+import scala.concurrent.duration.Duration;
 import server.order.OrderSupervisor;
 import server.search.SearchSupervisor;
 import server.stream.StreamManager;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import static akka.actor.SupervisorStrategy.restart;
 
-public class Server extends AbstractLoggingActor {
-    public static final String ORDERS_FILE = "order/orders.txt";
+public class ServerActor extends AbstractLoggingActor {
+    public static final String ORDERS_FILE = "database/orders.txt";
 
     private ActorRef searchManager;
     private ActorRef orderManager;
@@ -30,10 +25,13 @@ public class Server extends AbstractLoggingActor {
             switch (request.type){
                 case ORDER:
                     orderManager.tell(request,sender());
+                    break;
                 case SEARCH:
                     searchManager.tell(request,sender());
+                    break;
                 case STREAM:
                     streamManager.tell(request,sender());
+                    break;
                 default:
                     break;
             }
@@ -42,7 +40,7 @@ public class Server extends AbstractLoggingActor {
 
     @Override
     public SupervisorStrategy supervisorStrategy() {
-        return new OneForOneStrategy(5, Duration.ofSeconds(10), DeciderBuilder.
+        return new OneForOneStrategy(5, Duration.create(10, TimeUnit.SECONDS), DeciderBuilder.
                 matchAny(o -> restart()).
                 build());
     }
@@ -52,22 +50,5 @@ public class Server extends AbstractLoggingActor {
         searchManager = context().actorOf(Props.create(SearchSupervisor.class),"search_manager");
         orderManager = context().actorOf(Props.create(OrderSupervisor.class),"order_manager");
         streamManager = context().actorOf(Props.create(StreamManager.class),"stream_manager");
-    }
-
-    public static void main(String[] args) throws IOException {
-        final Config config = ConfigFactory.parseFile(new File("server/server.conf"));
-        final ActorSystem system = ActorSystem.create("server_system",config);
-        final ActorRef serverActor = system.actorOf(Props.create(Server.class),"server");
-        System.out.println(serverActor.path().address());
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        while (true) {
-            String line = br.readLine();
-            if (line.equals("q")) {
-                break;
-            }
-        }
-        system.terminate();
     }
 }

@@ -1,7 +1,9 @@
-package messages;
+package messaging;
 
-public class OrderResponse extends Response{
-    private boolean result;
+import java.io.Serializable;
+
+public class OrderResponse implements Serializable {
+    public boolean result;
 
     public OrderResponse(boolean result) {
         this.result = result;

@@ -1,36 +1,40 @@
 package server.order;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorNotFound;
-import akka.actor.ActorRef;
-import messages.MessageType;
-import messages.OrderResponse;
-import messages.Request;
+import akka.actor.AbstractLoggingActor;
+import akka.actor.OneForOneStrategy;
+import akka.actor.Props;
+import akka.actor.SupervisorStrategy;
+import akka.japi.pf.DeciderBuilder;
+import akka.japi.pf.ReceiveBuilder;
+import messaging.MessageType;
+import messaging.Request;
+import scala.concurrent.duration.Duration;
 
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
-public class OrderManager extends AbstractActor {
+import static akka.actor.SupervisorStrategy.stop;
+
+public class OrderSupervisor extends AbstractLoggingActor {
+
     @Override
     public Receive createReceive() {
-        return receiveBuilder().
-                match(Request.class, r -> {
-                    if (r.type.equals(MessageType.ORDER)) {
-                        try {
-                            ActorRef searchManager = context().system().actorSelection("user/server/search_manager").
-                                    resolveOne(Duration.ofSeconds(1)).toCompletableFuture().get();
-                            searchManager.tell(new Request(r.title,MessageType.SEARCH),getSelf());
-                            getContext().become(receiveSearchResponse(sender()));
-                        }
-                        catch (Exception ex){
-                            sender().tell(new OrderResponse(false),null);
-                        }
-
+        return ReceiveBuilder.create()
+                .match(Request.class,r->{
+                    if(r.type.equals(MessageType.ORDER)){
+                        getContext().actorOf(Props.create(OrderActor.class)).tell(r,sender());
                     }
-                }).build();
+                    else{
+                        log().info("Wrong request type");
+                    }
+                })
+                .matchAny(o -> log().info("received unknown message"))
+                .build();
     }
 
-    private Receive receiveSearchResponse(ActorRef client){
-
+    @Override
+    public SupervisorStrategy supervisorStrategy() {
+        return new OneForOneStrategy(5, Duration.create(10, TimeUnit.SECONDS), DeciderBuilder.
+                matchAny(o -> stop()).
+                build());
     }
 }

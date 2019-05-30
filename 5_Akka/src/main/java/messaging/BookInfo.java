@@ -1,4 +1,5 @@
-package PACKAGE_NAME;
+package messaging;
 
 public class BookInfo {
+
 }
